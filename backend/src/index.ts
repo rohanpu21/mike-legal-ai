@@ -13,6 +13,12 @@ import { downloadsRouter } from "./routes/downloads";
 const app = express();
 const PORT = process.env.PORT ?? 3001;
 
+// Simple request logger so Railway logs show all inbound requests
+app.use((req, _res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} origin=${req.headers.origin ?? "none"}`);
+  next();
+});
+
 // Allow the canonical frontend URL, any Vercel preview URL for this project,
 // and localhost for dev. Preview URLs change on every deploy so a static
 // allowlist would block them.
