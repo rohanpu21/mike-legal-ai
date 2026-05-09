@@ -338,3 +338,156 @@ create table if not exists public.tabular_review_chat_messages (
 
 create index if not exists tabular_review_chat_messages_chat_idx
   on public.tabular_review_chat_messages(chat_id, created_at);
+
+-- ---------------------------------------------------------------------------
+-- Public schema hardening
+-- ---------------------------------------------------------------------------
+
+revoke execute on function public.handle_new_user() from public;
+revoke execute on function public.handle_new_user() from anon;
+revoke execute on function public.handle_new_user() from authenticated;
+
+revoke all privileges on all tables in schema public from anon;
+revoke all privileges on all tables in schema public from authenticated;
+
+grant select on public.user_profiles to authenticated;
+grant update (
+  display_name,
+  organisation,
+  tabular_model,
+  claude_api_key,
+  gemini_api_key,
+  message_credits_used,
+  credits_reset_date,
+  updated_at
+) on public.user_profiles to authenticated;
+
+alter default privileges in schema public revoke all on tables from anon;
+alter default privileges in schema public revoke all on tables from authenticated;
+
+alter table public.projects enable row level security;
+alter table public.project_subfolders enable row level security;
+alter table public.documents enable row level security;
+alter table public.document_versions enable row level security;
+alter table public.document_edits enable row level security;
+alter table public.workflows enable row level security;
+alter table public.hidden_workflows enable row level security;
+alter table public.workflow_shares enable row level security;
+alter table public.chats enable row level security;
+alter table public.chat_messages enable row level security;
+alter table public.tabular_reviews enable row level security;
+alter table public.tabular_cells enable row level security;
+alter table public.tabular_review_chats enable row level security;
+alter table public.tabular_review_chat_messages enable row level security;
+
+drop policy if exists "Users can view their own profile" on public.user_profiles;
+create policy "Users can view their own profile"
+  on public.user_profiles for select
+  to authenticated
+  using ((select auth.uid()) = user_id);
+
+drop policy if exists "Users can update their own profile" on public.user_profiles;
+create policy "Users can update their own profile"
+  on public.user_profiles for update
+  to authenticated
+  using ((select auth.uid()) = user_id)
+  with check ((select auth.uid()) = user_id);
+
+create index if not exists documents_current_version_id_idx
+  on public.documents(current_version_id);
+
+create index if not exists documents_folder_id_idx
+  on public.documents(folder_id);
+
+create index if not exists project_subfolders_parent_folder_id_idx
+  on public.project_subfolders(parent_folder_id);
+
+create index if not exists tabular_cells_document_id_idx
+  on public.tabular_cells(document_id);
+
+create index if not exists tabular_reviews_workflow_id_idx
+  on public.tabular_reviews(workflow_id);
+
+create policy "No browser access"
+  on public.projects for all
+  to anon, authenticated
+  using (false)
+  with check (false);
+
+create policy "No browser access"
+  on public.project_subfolders for all
+  to anon, authenticated
+  using (false)
+  with check (false);
+
+create policy "No browser access"
+  on public.documents for all
+  to anon, authenticated
+  using (false)
+  with check (false);
+
+create policy "No browser access"
+  on public.document_versions for all
+  to anon, authenticated
+  using (false)
+  with check (false);
+
+create policy "No browser access"
+  on public.document_edits for all
+  to anon, authenticated
+  using (false)
+  with check (false);
+
+create policy "No browser access"
+  on public.workflows for all
+  to anon, authenticated
+  using (false)
+  with check (false);
+
+create policy "No browser access"
+  on public.hidden_workflows for all
+  to anon, authenticated
+  using (false)
+  with check (false);
+
+create policy "No browser access"
+  on public.workflow_shares for all
+  to anon, authenticated
+  using (false)
+  with check (false);
+
+create policy "No browser access"
+  on public.chats for all
+  to anon, authenticated
+  using (false)
+  with check (false);
+
+create policy "No browser access"
+  on public.chat_messages for all
+  to anon, authenticated
+  using (false)
+  with check (false);
+
+create policy "No browser access"
+  on public.tabular_reviews for all
+  to anon, authenticated
+  using (false)
+  with check (false);
+
+create policy "No browser access"
+  on public.tabular_cells for all
+  to anon, authenticated
+  using (false)
+  with check (false);
+
+create policy "No browser access"
+  on public.tabular_review_chats for all
+  to anon, authenticated
+  using (false)
+  with check (false);
+
+create policy "No browser access"
+  on public.tabular_review_chat_messages for all
+  to anon, authenticated
+  using (false)
+  with check (false);

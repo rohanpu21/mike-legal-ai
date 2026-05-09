@@ -15,21 +15,23 @@ import { isModelAvailable } from "@/app/lib/modelAvailability";
 export interface ModelOption {
     id: string;
     label: string;
-    group: "Anthropic" | "Google";
+    group: "Anthropic" | "Google" | "OpenRouter";
 }
 
 export const MODELS: ModelOption[] = [
     { id: "claude-opus-4-7", label: "Claude Opus 4.7", group: "Anthropic" },
     { id: "claude-sonnet-4-6", label: "Claude Sonnet 4.6", group: "Anthropic" },
-    { id: "gemini-3.1-pro-preview", label: "Gemini 3.1 Pro", group: "Google" },
     { id: "gemini-3-flash-preview", label: "Gemini 3 Flash", group: "Google" },
+    { id: "z-ai/glm-4.5-air:free", label: "GLM 4.5 Air", group: "OpenRouter" },
+    { id: "minimax/minimax-m2.5:free", label: "MiniMax M2.5", group: "OpenRouter" },
+    { id: "google/gemma-4-31b-it:free", label: "Gemma 4 31B", group: "OpenRouter" },
 ];
 
 export const DEFAULT_MODEL_ID = "gemini-3-flash-preview";
 
 export const ALLOWED_MODEL_IDS = new Set(MODELS.map((m) => m.id));
 
-const GROUP_ORDER: ModelOption["group"][] = ["Anthropic", "Google"];
+const GROUP_ORDER: ModelOption["group"][] = ["Anthropic", "Google", "OpenRouter"];
 
 interface Props {
     value: string;

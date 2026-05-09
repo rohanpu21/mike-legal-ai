@@ -29,11 +29,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const ensureProfile = async (accessToken: string) => {
+            let token = accessToken;
+            if (token.split(".").length !== 3) {
+                const {
+                    data: { session },
+                } = await supabase.auth.refreshSession();
+                token = session?.access_token ?? "";
+            }
+            if (token.split(".").length !== 3) return;
+
             const apiBase =
                 process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
             await fetch(`${apiBase}/user/profile`, {
                 method: "POST",
-                headers: { Authorization: `Bearer ${accessToken}` },
+                headers: { Authorization: `Bearer ${token}` },
             }).catch((e) => {
                 console.log(e);
             });

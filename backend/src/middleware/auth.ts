@@ -12,6 +12,15 @@ export async function requireAuth(
     return;
   }
   const token = auth.slice(7).trim();
+  const tokenSegments = token.split(".").length;
+  if (tokenSegments !== 3) {
+    console.warn("[auth] rejected malformed bearer token", {
+      path: req.path,
+      tokenSegments,
+    });
+    res.status(401).json({ detail: "Invalid or expired token" });
+    return;
+  }
 
   const supabaseUrl = process.env.SUPABASE_URL ?? "";
   const serviceKey = process.env.SUPABASE_SECRET_KEY ?? "";
@@ -24,8 +33,12 @@ export async function requireAuth(
   const admin = createClient(supabaseUrl, serviceKey, {
     auth: { persistSession: false },
   });
-  const { data } = await admin.auth.getUser(token);
+  const { data, error } = await admin.auth.getUser(token);
   if (!data.user) {
+    console.warn("[auth] rejected bearer token", {
+      path: req.path,
+      reason: error?.message ?? "no user returned",
+    });
     res.status(401).json({ detail: "Invalid or expired token" });
     return;
   }

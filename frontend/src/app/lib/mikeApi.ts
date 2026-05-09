@@ -41,8 +41,17 @@ async function getAuthHeader(): Promise<Record<string, string>> {
     const {
         data: { session },
     } = await supabase.auth.getSession();
-    if (!session?.access_token) return {};
-    return { Authorization: `Bearer ${session.access_token}` };
+    let accessToken = session?.access_token;
+
+    if (accessToken && accessToken.split(".").length !== 3) {
+        const {
+            data: { session: refreshedSession },
+        } = await supabase.auth.refreshSession();
+        accessToken = refreshedSession?.access_token;
+    }
+
+    if (!accessToken || accessToken.split(".").length !== 3) return {};
+    return { Authorization: `Bearer ${accessToken}` };
 }
 
 async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {

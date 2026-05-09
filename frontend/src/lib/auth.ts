@@ -20,7 +20,7 @@ export async function getUserFromRequest(request: NextRequest): Promise<{
 
     const token = authHeader.substring(7);
 
-    if (!token) {
+    if (!token || token.split('.').length !== 3) {
       return null;
     }
 
