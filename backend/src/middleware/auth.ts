@@ -33,7 +33,20 @@ export async function requireAuth(
   const admin = createClient(supabaseUrl, serviceKey, {
     auth: { persistSession: false },
   });
-  const { data, error } = await admin.auth.getUser(token);
+
+  let result: Awaited<ReturnType<typeof admin.auth.getUser>>;
+  try {
+    result = await admin.auth.getUser(token);
+  } catch (error) {
+    console.warn("[auth] failed to verify bearer token", {
+      path: req.path,
+      reason: error instanceof Error ? error.message : String(error),
+    });
+    res.status(401).json({ detail: "Invalid or expired token" });
+    return;
+  }
+
+  const { data, error } = result;
   if (!data.user) {
     console.warn("[auth] rejected bearer token", {
       path: req.path,
