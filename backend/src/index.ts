@@ -55,7 +55,13 @@ app.use("/user", userRouter);
 app.use("/users", userRouter);
 app.use("/download", downloadsRouter);
 
-app.get("/health", (_req, res) => res.json({ ok: true }));
+app.get("/health", (_req, res) =>
+  res.json({
+    ok: true,
+    service: "avlys-backend",
+    commit: process.env.RAILWAY_GIT_COMMIT_SHA?.slice(0, 7) ?? "unknown",
+  }),
+);
 
 app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(`[${new Date().toISOString()}] ${req.method} ${req.path} failed`, err);
