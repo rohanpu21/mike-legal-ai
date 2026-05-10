@@ -160,12 +160,12 @@ export const ChatInput = forwardRef<ChatInputHandle, Props>(function ChatInput(
     return (
         <>
             <div className="w-full">
-                <div className="border border-gray-300 rounded-[16px] md:rounded-[20px] bg-white">
+                <div className="avlys-control rounded-[22px]">
                     {/* Attached chips */}
                     {(selectedWorkflow || attachedDocs.length > 0) && (
-                        <div className="flex flex-wrap gap-1.5 px-2 pt-2">
+                        <div className="flex flex-wrap gap-1.5 px-2.5 pt-2.5">
                             {selectedWorkflow && (
-                                <div className="inline-flex items-center gap-1 pl-2.5 pr-1 py-0.5 rounded-full text-xs bg-blue-600 text-white border border-white/20 shadow backdrop-blur-sm">
+                                <div className="inline-flex items-center gap-1 pl-2.5 pr-1 py-0.5 rounded-full text-xs bg-[#0066cc] text-white border border-white/20 backdrop-blur-sm">
                                     <Library className="h-2.5 w-2.5 shrink-0" />
                                     <span className="max-w-[140px] truncate">
                                         {selectedWorkflow.title}
@@ -187,7 +187,7 @@ export const ChatInput = forwardRef<ChatInputHandle, Props>(function ChatInput(
                                 return (
                                     <div
                                         key={doc.id}
-                                        className="inline-flex items-center gap-1 pl-2 pr-1 py-0.5 rounded-full text-xs text-white shadow border border-white/20 bg-black backdrop-blur-sm"
+                                        className="inline-flex items-center gap-1 pl-2 pr-1 py-0.5 rounded-full text-xs text-white border border-white/20 bg-[#1d1d1f] backdrop-blur-sm"
                                     >
                                         {isPdf ? (
                                             <FileText className="h-2.5 w-2.5 shrink-0 text-red-400" />
@@ -217,7 +217,7 @@ export const ChatInput = forwardRef<ChatInputHandle, Props>(function ChatInput(
                     )}
 
                     {/* Input */}
-                    <div className="px-4 pt-4">
+                    <div className="px-5 pt-5">
                         <textarea
                             ref={textareaRef}
                             rows={1}
@@ -225,7 +225,7 @@ export const ChatInput = forwardRef<ChatInputHandle, Props>(function ChatInput(
                             value={value}
                             onChange={handleChange}
                             onKeyDown={handleKeyDown}
-                            className="w-full resize-none text-sm overflow-hidden border-0 text-base p-0 bg-transparent outline-none placeholder:text-gray-400 leading-6 max-h-48"
+                            className="w-full resize-none overflow-hidden border-0 text-[17px] p-0 bg-transparent outline-none placeholder:text-[#7a7a7a] leading-6 max-h-48"
                         />
                     </div>
 
@@ -246,7 +246,7 @@ export const ChatInput = forwardRef<ChatInputHandle, Props>(function ChatInput(
                                     type="button"
                                     onClick={onProjectsClick}
                                     aria-label="Open projects"
-                                    className="flex items-center gap-1.5 rounded-lg px-2 h-8 text-sm text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+                                    className="flex items-center gap-1.5 rounded-full px-3 h-9 text-sm text-[#7a7a7a] hover:bg-[#f5f5f7] hover:text-[#1d1d1f] transition-colors"
                                 >
                                     <FolderOpen className="h-3.5 w-3.5" />
                                     <span className="hidden sm:inline">
@@ -259,7 +259,7 @@ export const ChatInput = forwardRef<ChatInputHandle, Props>(function ChatInput(
                                     type="button"
                                     onClick={() => setWorkflowModalOpen(true)}
                                     aria-label="Open workflows"
-                                    className={`flex items-center gap-1.5 rounded-lg px-2 h-8 text-sm transition-colors ${selectedWorkflow ? "text-blue-600 hover:bg-blue-50" : "text-gray-400 hover:bg-gray-100 hover:text-gray-700"}`}
+                                    className={`flex items-center gap-1.5 rounded-full px-3 h-9 text-sm transition-colors ${selectedWorkflow ? "text-[#0066cc] hover:bg-blue-50" : "text-[#7a7a7a] hover:bg-[#f5f5f7] hover:text-[#1d1d1f]"}`}
                                 >
                                     {selectedWorkflow ? (
                                         <Check className="h-3.5 w-3.5" />
@@ -281,7 +281,7 @@ export const ChatInput = forwardRef<ChatInputHandle, Props>(function ChatInput(
                             />
                             <button
                                 type="button"
-                                className="relative bg-gradient-to-b from-neutral-700 to-black text-white rounded-[10px] h-8 w-8 flex items-center justify-center cursor-pointer disabled:cursor-default disabled:from-neutral-600 disabled:to-black backdrop-blur-xl border border-white/30 active:enabled:scale-95 transition-all duration-150"
+                                className="relative bg-[#0066cc] text-white rounded-full h-10 w-10 flex items-center justify-center cursor-pointer disabled:cursor-default disabled:bg-[#d2d2d7] disabled:text-[#7a7a7a] border border-black/[0.04] active:enabled:scale-95 hover:enabled:bg-[#0071e3] transition-all duration-150"
                                 onClick={handleActionClick}
                                 disabled={!isLoading && !value.trim()}
                             >

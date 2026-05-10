@@ -16,7 +16,7 @@ import { useUserProfile } from "@/contexts/UserProfileContext";
 import { useChatHistoryContext } from "@/app/contexts/ChatHistoryContext";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { MikeIcon } from "@/components/chat/mike-icon";
+import { AvlysMark } from "@/components/avlys-logo";
 import { SidebarChatItem } from "@/app/components/shared/SidebarChatItem";
 import { listProjects } from "@/app/lib/mikeApi";
 
@@ -111,9 +111,9 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
         <div
             className={`${
                 isOpen
-                    ? "w-64 h-dvh bg-gray-50 border-r"
-                    : "w-14 md:h-dvh md:bg-gray-50 md:border-r h-auto bg-transparent"
-            } border-gray-200 flex flex-col transition-all duration-300 absolute md:relative z-99 overflow-visible`}
+                    ? "w-64 h-dvh bg-[#f5f5f7] border-r"
+                    : "w-14 md:h-dvh md:bg-[#f5f5f7] md:border-r h-auto bg-transparent"
+            } border-[#e0e0e0] flex flex-col transition-all duration-300 absolute md:relative z-99 overflow-visible`}
         >
             {/* Toggle + Logo */}
             <div
@@ -125,22 +125,22 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                     <div className="px-2.5">
                         <Link
                             href="/assistant"
-                            className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+                            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
                         >
-                            <MikeIcon size={22} />
+                            <AvlysMark size={30} />
                             <span
-                                className={`text-2xl font-light font-serif ${
+                                className={`text-[22px] leading-none font-semibold tracking-[-0.02em] text-[#1d1d1f] ${
                                     shouldAnimate ? "sidebar-fade-in" : ""
                                 }`}
                             >
-                                Mike
+                                Avlys
                             </span>
                         </Link>
                     </div>
                 )}
                 <button
                     onClick={onToggle}
-                    className="h-9 w-9 p-2.5 items-center flex hover:bg-gray-100 rounded-md transition-colors"
+                    className="h-9 w-9 p-2.5 items-center flex hover:bg-white rounded-full transition-colors"
                     title={isOpen ? "Close sidebar" : "Open sidebar"}
                 >
                     <PanelLeft className="h-4 w-4" />
@@ -156,20 +156,20 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                         <button
                             onClick={() => router.push(href)}
                             title={!isOpen ? label : ""}
-                            className={`w-full h-9 flex items-center gap-3 px-2.5 py-2 rounded-md transition-colors text-left ${
+                            className={`w-full h-9 flex items-center gap-3 px-2.5 py-2 rounded-full transition-colors text-left ${
                                 isActive
-                                    ? "bg-gray-100 text-gray-900"
-                                    : "hover:bg-gray-100 text-gray-700"
+                                    ? "bg-white text-[#1d1d1f] border border-black/[0.04]"
+                                    : "hover:bg-white text-[#333333]"
                             } ${!isOpen ? "hidden md:flex" : "flex"}`}
                         >
                             <Icon
                                 className={`h-4 w-4 flex-shrink-0 ${
-                                    isActive ? "text-gray-900" : "text-black"
+                                    isActive ? "text-[#1d1d1f]" : "text-[#333333]"
                                 }`}
                             />
                             {isOpen && (
                                 <span
-                                    className={`text-sm font-medium ${
+                                    className={`text-sm font-normal ${
                                         shouldAnimate ? "sidebar-fade-in-2" : ""
                                     }`}
                                 >
@@ -186,7 +186,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                 <div className="mt-4 flex-1 min-h-0 flex flex-col">
                     <button
                         onClick={() => setHistoryCollapsed((v) => !v)}
-                        className={`mb-2 px-5 flex items-center justify-between text-xs font-semibold text-gray-500 hover:text-gray-700 transition-colors ${
+                        className={`mb-2 px-5 flex items-center justify-between text-xs font-semibold text-[#7a7a7a] hover:text-[#333333] transition-colors ${
                             shouldAnimate ? "sidebar-fade-in" : ""
                         }`}
                     >
@@ -206,7 +206,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                         className="h-9 flex items-center px-3 rounded-md"
                                     >
                                         <div
-                                            className="h-3 bg-gray-200 rounded animate-pulse"
+                                            className="h-3 bg-[#d2d2d7] rounded-full animate-pulse"
                                             style={{ width: `${w}%` }}
                                         />
                                     </div>
@@ -258,16 +258,16 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                     <div className="relative">
                         <button
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            className={`flex items-center transition-colors w-full px-3.5 py-4 border-t border-gray-200 ${
+                            className={`flex items-center transition-colors w-full px-3.5 py-4 border-t border-[#e0e0e0] ${
                                 !isOpen ? "hidden md:flex" : ""
                             } ${
                                 pathname === "/account" || isDropdownOpen
-                                    ? "bg-gray-100"
-                                    : "hover:bg-gray-100"
+                                    ? "bg-white"
+                                    : "hover:bg-white"
                             }`}
                             title={!isOpen ? user.email : undefined}
                         >
-                            <div className="h-7 w-7 flex-shrink-0 rounded-full bg-gray-700 flex items-center justify-center text-white text-sm font-medium font-serif">
+                            <div className="h-7 w-7 flex-shrink-0 rounded-full bg-[#1d1d1f] flex items-center justify-center text-white text-sm font-medium">
                                 {getUserInitials(user.email)}
                             </div>
                             {isOpen && (
@@ -277,26 +277,26 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                     }`}
                                 >
                                     <div className="flex flex-col gap-0.5 min-w-0">
-                                        <div className="text-sm font-medium text-gray-900 leading-none">
+                                        <div className="text-sm font-medium text-[#1d1d1f] leading-none">
                                             {getDisplayName()}
                                         </div>
-                                        <div className="text-[12px] text-gray-500 leading-none">
+                                        <div className="text-[12px] text-[#7a7a7a] leading-none">
                                             {getUserTier()}
                                         </div>
                                     </div>
-                                    <ChevronsUpDown className="h-4 w-4 flex-shrink-0 text-gray-400" />
+                                    <ChevronsUpDown className="h-4 w-4 flex-shrink-0 text-[#7a7a7a]" />
                                 </div>
                             )}
                         </button>
 
                         {isDropdownOpen && (
-                            <div className="absolute bottom-full left-0 m-1 bg-white rounded-lg shadow-lg border border-gray-200 p-1 z-50 w-62 whitespace-nowrap">
+                            <div className="absolute bottom-full left-0 m-1 bg-white rounded-[18px] border border-[#e0e0e0] p-1 z-50 w-62 whitespace-nowrap">
                                 <button
                                     onClick={() => {
                                         router.push("/account");
                                         setIsDropdownOpen(false);
                                     }}
-                                    className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2 rounded-md"
+                                    className="w-full px-4 py-2 text-left text-sm text-[#333333] hover:bg-[#f5f5f7] flex items-center gap-2 rounded-full"
                                 >
                                     <User className="h-4 w-4" />
                                     Account Settings

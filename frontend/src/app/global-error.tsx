@@ -14,7 +14,7 @@ export default function GlobalError({
     return (
         <html lang="en">
             <head>
-                <title>Something went wrong – Mike</title>
+                <title>Something went wrong - Avlys</title>
                 <style>{`
                     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=EB+Garamond:wght@400;500&display=swap');
 
@@ -64,12 +64,12 @@ export default function GlobalError({
                         transition: all 0.15s ease;
                         text-decoration: none;
                         border: none;
-                        background-color: rgb(0, 136, 255);
+                        background-color: #0066cc;
                         color: white;
                     }
 
                     .btn-back:hover {
-                        background-color: rgb(0, 120, 230);
+                        background-color: #0071e3;
                     }
 
                     .btn-back:active {

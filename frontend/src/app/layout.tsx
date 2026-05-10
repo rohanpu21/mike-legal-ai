@@ -15,7 +15,7 @@ const ebGaramond = EB_Garamond({
 });
 
 export const metadata: Metadata = {
-    title: "Mike - AI Legal Platform",
+    title: "Avlys - AI Legal Workspace",
     description:
         "AI-powered legal document analysis and contract review platform.",
     icons: {

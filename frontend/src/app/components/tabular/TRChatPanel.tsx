@@ -14,6 +14,7 @@ import {
     Trash2,
 } from "lucide-react";
 import { MikeIcon } from "@/components/chat/mike-icon";
+import { AvlysMark } from "@/components/avlys-logo";
 import {
     streamTabularChat,
     getTabularChats,
@@ -1320,7 +1321,7 @@ export function TRChatPanel({
             {/* Header */}
             <div className="flex items-center justify-between h-8 px-2 border-b border-gray-200 shrink-0">
                 <div className="flex items-center gap-1.5 px-2 min-w-0">
-                    <MikeIcon mike size={14} />
+                    <AvlysMark size={18} />
                     <div
                         onMouseEnter={(e) => {
                             const el = e.currentTarget;

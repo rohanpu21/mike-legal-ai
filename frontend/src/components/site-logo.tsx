@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MikeIcon } from "@/components/chat/mike-icon";
+import { AvlysWordmark } from "@/components/avlys-logo";
 
 interface SiteLogoProps {
     size?: "sm" | "md" | "lg" | "xl";
@@ -16,8 +16,8 @@ export function SiteLogo({
 }: SiteLogoProps) {
     const landingHref =
         process.env.NODE_ENV === "production"
-            ? "https://mikeoss.com"
-            : "http://localhost:3000";
+            ? "https://www.avlysai.com"
+            : "/assistant";
     const sizeClasses = {
         sm: "text-xl",
         md: "text-2xl",
@@ -34,12 +34,11 @@ export function SiteLogo({
 
     const logo = (
         <h1
-            className={`flex items-center gap-1.5 ${sizeClasses[size]} font-light font-serif ${
+            className={`flex items-center ${sizeClasses[size]} ${
                 animate ? "sidebar-fade-in" : ""
             } ${className}`}
         >
-            <MikeIcon size={iconSizes[size]} />
-            <span>Mike</span>
+            <AvlysWordmark size={iconSizes[size]} />
         </h1>
     );
 

@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserProfile } from "@/contexts/UserProfileContext";
-import { MikeIcon } from "@/components/chat/mike-icon";
+import { AvlysMark } from "@/components/avlys-logo";
 import { ChatInput } from "./ChatInput";
 import { SelectAssistantProjectModal } from "./SelectAssistantProjectModal";
 import type { MikeMessage } from "../shared/types";
@@ -56,11 +56,11 @@ export function InitialView({ onSubmit }: InitialViewProps) {
                                     "transform 900ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
                             }}
                         >
-                            <MikeIcon size={ICON_SIZE} />
+                            <AvlysMark size={ICON_SIZE} />
                         </div>
                         <h1
                             ref={textRef}
-                            className="absolute text-4xl font-serif font-light text-gray-900 whitespace-nowrap"
+                            className="absolute text-4xl font-semibold tracking-[-0.02em] text-[#1d1d1f] whitespace-nowrap"
                             style={{
                                 left: "50%",
                                 transform: loaded
@@ -83,7 +83,7 @@ export function InitialView({ onSubmit }: InitialViewProps) {
                     />
 
                     <div className="text-center">
-                        <p className="text-xs py-3 mb-3 text-gray-500">
+                        <p className="text-xs py-3 mb-3 text-[#7a7a7a]">
                             AI can make mistakes. Answers are not legal advice.
                         </p>
                     </div>
