@@ -22,12 +22,14 @@ app.use((req, _res, next) => {
 // Allow the canonical frontend URL, any Vercel preview URL for this project,
 // and localhost for dev. Preview URLs change on every deploy so a static
 // allowlist would block them.
-const allowedOriginRegex = /^https:\/\/mike-legal-ai-frontend(-[a-z0-9]+)*-rohanpu21s-projects\.vercel\.app$/;
+const allowedOriginRegexes = [
+  /^https:\/\/mike-legal-ai-frontend(-[a-z0-9]+)*-rohanpu21s-projects\.vercel\.app$/,
+  /^https:\/\/avlys-legal-ai-frontend(-[a-z0-9]+)*-rohanpu21s-projects\.vercel\.app$/,
+];
 const canonicalOrigins = [
   process.env.FRONTEND_URL,
   "https://mike-legal-ai-frontend.vercel.app",
-  "https://www.avlysai.com",
-  "https://avlysai.com",
+  "https://avlys-legal-ai-frontend.vercel.app",
   "http://localhost:3000",
 ].filter(Boolean) as string[];
 
@@ -37,7 +39,9 @@ app.use(
       // Allow same-origin / non-browser requests (no Origin header).
       if (!origin) return callback(null, true);
       if (canonicalOrigins.includes(origin)) return callback(null, true);
-      if (allowedOriginRegex.test(origin)) return callback(null, true);
+      if (allowedOriginRegexes.some((regex) => regex.test(origin))) {
+        return callback(null, true);
+      }
       return callback(new Error(`CORS blocked: ${origin}`));
     },
     credentials: true,

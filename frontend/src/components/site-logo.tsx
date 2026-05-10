@@ -14,10 +14,7 @@ export function SiteLogo({
     animate = false,
     asLink = false,
 }: SiteLogoProps) {
-    const landingHref =
-        process.env.NODE_ENV === "production"
-            ? "https://www.avlysai.com"
-            : "/assistant";
+    const landingHref = "/assistant";
     const sizeClasses = {
         sm: "text-xl",
         md: "text-2xl",

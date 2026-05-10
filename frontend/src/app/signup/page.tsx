@@ -256,23 +256,13 @@ export default function SignupPage() {
                     {/* Terms and Privacy */}
                     <div className="mt-4 text-center text-xs text-[#7a7a7a]">
                         By signing up, you agree to our{" "}
-                        <Link
-                            href="https://www.avlysai.com/terms"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#0066cc] hover:underline"
-                        >
+                        <span className="text-[#0066cc]">
                             Terms of Use
-                        </Link>{" "}
+                        </span>{" "}
                         and{" "}
-                        <Link
-                            href="https://www.avlysai.com/privacy"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#0066cc] hover:underline"
-                        >
+                        <span className="text-[#0066cc]">
                             Privacy Policy
-                        </Link>
+                        </span>
                     </div>
                 </div>
             </div>
