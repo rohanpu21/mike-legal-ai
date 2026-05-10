@@ -25,6 +25,9 @@ app.use((req, _res, next) => {
 const allowedOriginRegex = /^https:\/\/mike-legal-ai-frontend(-[a-z0-9]+)*-rohanpu21s-projects\.vercel\.app$/;
 const canonicalOrigins = [
   process.env.FRONTEND_URL,
+  "https://mike-legal-ai-frontend.vercel.app",
+  "https://www.avlysai.com",
+  "https://avlysai.com",
   "http://localhost:3000",
 ].filter(Boolean) as string[];
 
@@ -55,6 +58,18 @@ app.use("/download", downloadsRouter);
 
 app.get("/health", (_req, res) => res.json({ ok: true }));
 
+app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(`[${new Date().toISOString()}] ${req.method} ${req.path} failed`, err);
+  if (res.headersSent) return next(err);
+
+  const message = err instanceof Error ? err.message : String(err);
+  if (message.startsWith("CORS blocked:")) {
+    return res.status(403).json({ detail: "Origin not allowed" });
+  }
+
+  return res.status(500).json({ detail: "Internal server error" });
+});
+
 app.listen(PORT, () => {
-  console.log(`Mike backend running on port ${PORT}`);
+  console.log(`Avlys backend running on port ${PORT}`);
 });

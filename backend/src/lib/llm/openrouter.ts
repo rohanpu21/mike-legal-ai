@@ -78,7 +78,7 @@ function headers(): Record<string, string> {
     return {
         Authorization: `Bearer ${apiKey()}`,
         "Content-Type": "application/json",
-        "X-OpenRouter-Title": "Mike Legal AI",
+        "X-OpenRouter-Title": "Avlys Legal AI",
     };
 }
 
