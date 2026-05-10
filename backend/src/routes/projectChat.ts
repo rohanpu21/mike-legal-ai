@@ -78,72 +78,6 @@ projectChatRouter.post("/", requireAuth, async (req, res) => {
         chatTitle = newChat.title;
     }
 
-    const lastUser = [...messages].reverse().find((m) => m.role === "user");
-    if (lastUser) {
-        await db.from("chat_messages").insert({
-            chat_id: chatId,
-            role: "user",
-            content: lastUser.content,
-            files: lastUser.files ?? null,
-            workflow: lastUser.workflow ?? null,
-        });
-    }
-
-    const { docIndex, docStore, folderPaths } = await buildProjectDocContext(
-        projectId,
-        userId,
-        db,
-    );
-    const docAvailability = Object.entries(docIndex).map(([doc_id, info]) => ({
-        doc_id,
-        filename: info.filename,
-        folder_path: folderPaths.get(doc_id),
-    }));
-
-    const enrichedMessages = await enrichWithPriorEvents(
-        messages,
-        chatId,
-        db,
-        docIndex,
-    );
-    const messagesForLLM: ChatMessage[] = displayed_doc
-        ? enrichedMessages.map((m, i) => {
-              if (i !== enrichedMessages.length - 1 || m.role !== "user")
-                  return m;
-              return {
-                  ...m,
-                  content: `${m.content}\n\ndisplayed_doc: ${displayed_doc.filename}, displayed_doc_id: ${displayed_doc.document_id}`,
-              };
-          })
-        : enrichedMessages;
-
-    // The user-attached docs for this turn (dragged into / picked from
-    // the chat input) come in as a request-level field. Surface them in
-    // the system prompt with the current-turn doc_id slugs so the model
-    // knows which docs the user is highlighting *now*, distinct from
-    // the broader project doc list.
-    let systemPromptExtra = PROJECT_SYSTEM_PROMPT_EXTRA;
-    if (attached_documents?.length) {
-        const slugByDocumentId = new Map<string, string>();
-        for (const [slug, info] of Object.entries(docIndex)) {
-            if (info.document_id)
-                slugByDocumentId.set(info.document_id, slug);
-        }
-        const lines = attached_documents.map((d) => {
-            const slug = slugByDocumentId.get(d.document_id);
-            return slug ? `- ${slug}: ${d.filename}` : `- ${d.filename}`;
-        });
-        systemPromptExtra += `\n\nUSER-ATTACHED DOCUMENTS FOR THIS TURN:\nThe user has attached the following document(s) directly to their latest message. Treat these as the primary focus of the request unless their message clearly says otherwise.\n${lines.join("\n")}`;
-    }
-
-    const apiMessages = buildMessages(
-        messagesForLLM,
-        docAvailability,
-        systemPromptExtra,
-    );
-
-    const workflowStore = await buildWorkflowStore(userId, userEmail, db);
-
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
@@ -152,10 +86,76 @@ projectChatRouter.post("/", requireAuth, async (req, res) => {
 
     const write = (line: string) => res.write(line);
 
-    const apiKeys = await getUserApiKeys(userId, db);
-
     try {
         write(`data: ${JSON.stringify({ type: "chat_id", chatId })}\n\n`);
+
+        const lastUser = [...messages]
+            .reverse()
+            .find((m) => m.role === "user");
+        if (lastUser) {
+            await db.from("chat_messages").insert({
+                chat_id: chatId,
+                role: "user",
+                content: lastUser.content,
+                files: lastUser.files ?? null,
+                workflow: lastUser.workflow ?? null,
+            });
+        }
+
+        const { docIndex, docStore, folderPaths } =
+            await buildProjectDocContext(projectId, userId, db);
+        const docAvailability = Object.entries(docIndex).map(
+            ([doc_id, info]) => ({
+                doc_id,
+                filename: info.filename,
+                folder_path: folderPaths.get(doc_id),
+            }),
+        );
+
+        const enrichedMessages = await enrichWithPriorEvents(
+            messages,
+            chatId,
+            db,
+            docIndex,
+        );
+        const messagesForLLM: ChatMessage[] = displayed_doc
+            ? enrichedMessages.map((m, i) => {
+                  if (i !== enrichedMessages.length - 1 || m.role !== "user")
+                      return m;
+                  return {
+                      ...m,
+                      content: `${m.content}\n\ndisplayed_doc: ${displayed_doc.filename}, displayed_doc_id: ${displayed_doc.document_id}`,
+                  };
+              })
+            : enrichedMessages;
+
+        // The user-attached docs for this turn (dragged into / picked from
+        // the chat input) come in as a request-level field. Surface them in
+        // the system prompt with the current-turn doc_id slugs so the model
+        // knows which docs the user is highlighting *now*, distinct from
+        // the broader project doc list.
+        let systemPromptExtra = PROJECT_SYSTEM_PROMPT_EXTRA;
+        if (attached_documents?.length) {
+            const slugByDocumentId = new Map<string, string>();
+            for (const [slug, info] of Object.entries(docIndex)) {
+                if (info.document_id)
+                    slugByDocumentId.set(info.document_id, slug);
+            }
+            const lines = attached_documents.map((d) => {
+                const slug = slugByDocumentId.get(d.document_id);
+                return slug ? `- ${slug}: ${d.filename}` : `- ${d.filename}`;
+            });
+            systemPromptExtra += `\n\nUSER-ATTACHED DOCUMENTS FOR THIS TURN:\nThe user has attached the following document(s) directly to their latest message. Treat these as the primary focus of the request unless their message clearly says otherwise.\n${lines.join("\n")}`;
+        }
+
+        const apiMessages = buildMessages(
+            messagesForLLM,
+            docAvailability,
+            systemPromptExtra,
+        );
+
+        const workflowStore = await buildWorkflowStore(userId, userEmail, db);
+        const apiKeys = await getUserApiKeys(userId, db);
 
         const { fullText, events } = await runLLMStream({
             apiMessages,

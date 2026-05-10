@@ -389,43 +389,6 @@ chatRouter.post("/", requireAuth, async (req, res) => {
 
     console.log("[chat/stream] resolved chatId", chatId);
 
-    const lastUser = [...messages].reverse().find((m) => m.role === "user");
-    if (lastUser) {
-        await db.from("chat_messages").insert({
-            chat_id: chatId,
-            role: "user",
-            content: lastUser.content,
-            files: lastUser.files ?? null,
-            workflow: lastUser.workflow ?? null,
-        });
-    }
-
-    const { docIndex, docStore } = await buildDocContext(
-        messages,
-        userId,
-        db,
-        chatId,
-    );
-    const docAvailability = Object.entries(docIndex).map(([doc_id, info]) => ({
-        doc_id,
-        filename: info.filename,
-    }));
-    const enrichedMessages = await enrichWithPriorEvents(
-        messages,
-        chatId,
-        db,
-        docIndex,
-    );
-    const apiMessages = buildMessages(enrichedMessages, docAvailability);
-
-    const workflowStore = await buildWorkflowStore(userId, userEmail, db);
-
-    console.log("[chat/stream] starting LLM stream", {
-        apiMessageCount: apiMessages.length,
-        docCount: Object.keys(docIndex).length,
-        workflowCount: Object.keys(workflowStore).length,
-    });
-
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
@@ -434,10 +397,50 @@ chatRouter.post("/", requireAuth, async (req, res) => {
 
     const write = (line: string) => res.write(line);
 
-    const apiKeys = await getUserApiKeys(userId, db);
-
     try {
         write(`data: ${JSON.stringify({ type: "chat_id", chatId })}\n\n`);
+
+        const lastUser = [...messages]
+            .reverse()
+            .find((m) => m.role === "user");
+        if (lastUser) {
+            await db.from("chat_messages").insert({
+                chat_id: chatId,
+                role: "user",
+                content: lastUser.content,
+                files: lastUser.files ?? null,
+                workflow: lastUser.workflow ?? null,
+            });
+        }
+
+        const { docIndex, docStore } = await buildDocContext(
+            messages,
+            userId,
+            db,
+            chatId,
+        );
+        const docAvailability = Object.entries(docIndex).map(
+            ([doc_id, info]) => ({
+                doc_id,
+                filename: info.filename,
+            }),
+        );
+        const enrichedMessages = await enrichWithPriorEvents(
+            messages,
+            chatId,
+            db,
+            docIndex,
+        );
+        const apiMessages = buildMessages(enrichedMessages, docAvailability);
+
+        const workflowStore = await buildWorkflowStore(userId, userEmail, db);
+        const apiKeys = await getUserApiKeys(userId, db);
+
+        console.log("[chat/stream] starting LLM stream", {
+            apiMessageCount: apiMessages.length,
+            docCount: Object.keys(docIndex).length,
+            workflowCount: Object.keys(workflowStore).length,
+        });
 
         const { fullText, events } = await runLLMStream({
             apiMessages,
