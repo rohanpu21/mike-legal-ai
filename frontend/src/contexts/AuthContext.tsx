@@ -8,6 +8,7 @@ import React, {
     ReactNode,
 } from "react";
 import { supabase } from "@/lib/supabase";
+import { getApiBase } from "@/app/lib/apiBase";
 
 interface User {
     id: string;
@@ -38,8 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
             if (token.split(".").length !== 3) return;
 
-            const apiBase =
-                process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
+            const apiBase = getApiBase();
             await fetch(`${apiBase}/user/profile`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` },
